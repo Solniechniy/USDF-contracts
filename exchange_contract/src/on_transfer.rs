@@ -1,0 +1,55 @@
+use {
+    near_contract_standards::fungible_token::receiver::FungibleTokenReceiver,
+    near_sdk::{env, json_types::U128, near, serde_json, AccountId, PromiseOrValue},
+};
+
+use crate::{Contract, ContractExt};
+
+#[near(serializers = [json])]
+pub struct ExchangeData {
+    pub token_in: AccountId,
+    pub amount_in: u128,
+    pub amount_out: u128,
+    pub nonce: u64,
+    pub account_id: AccountId,
+    pub signature: Vec<u8>,
+}
+
+#[near]
+impl FungibleTokenReceiver for Contract {
+    fn ft_on_transfer(
+        &mut self,
+        sender_id: AccountId,
+        amount: U128,
+        msg: String,
+    ) -> PromiseOrValue<U128> {
+        if env::predecessor_account_id() == self.token_id {
+            self.reverse_exchange(amount, sender_id, env::predecessor_account_id());
+            PromiseOrValue::Value(U128(0))
+        } else {
+            let data: ExchangeData = serde_json::from_str(&msg).expect("ERR_FAILED_TO_PARSE_MSG");
+
+            self.verify_signature(&data);
+
+            self.validate_data(
+                &data,
+                &sender_id,
+                &env::predecessor_account_id(),
+                amount.into(),
+            );
+
+            PromiseOrValue::Promise(self.execute_exchange(data))
+        }
+    }
+}
+
+pub trait TimeExtension {
+    fn to_nanoseconds(&self) -> u64;
+}
+
+impl TimeExtension for u64 {
+    fn to_nanoseconds(&self) -> u64 {
+        let ns_multiplier = 1_000_000_000;
+        self * ns_multiplier
+    }
+}
