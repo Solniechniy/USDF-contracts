@@ -7,11 +7,8 @@ use crate::{Contract, ContractExt};
 
 #[near(serializers = [json])]
 pub struct ExchangeData {
-    pub token_in: AccountId,
-    pub amount_in: u128,
     pub amount_out: u128,
     pub nonce: u64,
-    pub account_id: AccountId,
     pub signature: Vec<u8>,
 }
 
@@ -23,22 +20,18 @@ impl FungibleTokenReceiver for Contract {
         amount: U128,
         msg: String,
     ) -> PromiseOrValue<U128> {
-        if env::predecessor_account_id() == self.token_id {
-            self.reverse_exchange(amount, sender_id, env::predecessor_account_id());
+        let token_in = env::predecessor_account_id();
+        if token_in == self.token_id {
+            self.reverse_exchange(amount, sender_id, token_in);
             PromiseOrValue::Value(U128(0))
         } else {
             let data: ExchangeData = serde_json::from_str(&msg).expect("ERR_FAILED_TO_PARSE_MSG");
 
-            self.verify_signature(&data);
+            self.verify_signature(&data, &token_in, amount.0, &sender_id);
 
-            self.validate_data(
-                &data,
-                &sender_id,
-                &env::predecessor_account_id(),
-                amount.into(),
-            );
+            self.validate_data(&data, &sender_id);
 
-            PromiseOrValue::Promise(self.execute_exchange(data))
+            PromiseOrValue::Promise(self.execute_exchange(data, &token_in, amount.0, &sender_id))
         }
     }
 }

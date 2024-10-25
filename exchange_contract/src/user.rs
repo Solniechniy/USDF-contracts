@@ -18,12 +18,18 @@ pub struct ExchangeItem {
 }
 
 impl Contract {
-    pub fn execute_exchange(&mut self, data: ExchangeData) -> Promise {
-        self.assert_whitelisted_token(&data.token_in);
+    pub fn execute_exchange(
+        &mut self,
+        data: ExchangeData,
+        token_in: &AccountId,
+        amount_in: u128,
+        account_id: &AccountId,
+    ) -> Promise {
+        self.assert_whitelisted_token(token_in);
 
-        if !self.users.contains_key(&data.account_id) {
+        if !self.users.contains_key(account_id) {
             self.users.insert(
-                data.account_id.clone(),
+                account_id.clone(),
                 User {
                     nonce: 0,
                     exchanges: vec![],
@@ -31,19 +37,19 @@ impl Contract {
             );
         }
 
-        let user = self.users.get_mut(&data.account_id).expect("ERR_NO_USER");
+        let user = self.users.get_mut(account_id).expect("ERR_NO_USER");
 
         user.nonce = data.nonce;
 
         user.exchanges.push(ExchangeItem {
-            token_in: data.token_in.clone(),
-            amount_in: data.amount_in,
+            token_in: token_in.clone(),
+            amount_in,
             amount_out: data.amount_out,
         });
 
         ext_ft_core::ext(self.token_id.clone())
             .with_attached_deposit(NearToken::from_yoctonear(ONE_YOCTO))
-            .ft_transfer(data.account_id, U128(data.amount_out), None)
+            .ft_transfer(account_id.clone(), U128(data.amount_out), None)
             .then(Self::ext(env::current_account_id()).on_exchange_transfer())
     }
 
@@ -79,23 +85,10 @@ impl Contract {
         );
     }
 
-    pub(crate) fn validate_data(
-        &self,
-        data: &ExchangeData,
-        account_id: &AccountId,
-        token_id: &AccountId,
-        amount: u128,
-    ) {
-        assert!(
-            data.amount_in > 0 && data.amount_out > 0,
-            "ERR_INVALID_AMOUNTS"
-        );
+    pub(crate) fn validate_data(&self, data: &ExchangeData, account_id: &AccountId) {
+        assert!(data.amount_out > 0, "ERR_INVALID_AMOUNT_OUT");
 
         let nonce = self.users.get(account_id).map(|u| u.nonce).unwrap_or(0);
         assert!(data.nonce > nonce, "ERR_INVALID_NONCE");
-
-        assert!(data.token_in == *token_id, "ERR_INVALID_TOKEN_IN");
-
-        assert!(amount == data.amount_in, "ERR_INVALID_AMOUNT");
     }
 }
