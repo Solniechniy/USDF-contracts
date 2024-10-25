@@ -64,3 +64,27 @@ near call $CONTRACT_ID update_withdraw_delay '{"withdraw_delay": 600}' --account
 near call $CONTRACT_ID remove_whitelisted_token '{"token
 _id": "'$TOKEN2_ID'"}' --accountId $OWNER_ID
 ```
+
+### Exchange tokens
+
+To exchange tokens you need to call ft_transfer_call with structure
+
+```rust
+pub struct ExchangeData {
+    pub amount_out: u128,
+    pub nonce: u64,
+    pub signature: Vec<u8>,
+}
+```
+
+```bash
+near call $TOKEN_ID ft_transfer_call '{"receiver_id": "'$CONTRACT_ID'", "amount": "100000000000000000000", "msg": "{\"ExchangeData\":{\"amount_out\": \"10000000000000000000\", \"nonce\": 1, "signature": []}}"}' --accountId $OWNER_ID --gas 280000000000000 --depositYocto 1
+```
+
+### Exchange back
+
+To exchange back usdf tokens to asset you have to send exactly the same count of tokens as you received. Msg no matter.
+
+```bash
+near call $TOKEN_ID ft_transfer_call '{"receiver_id": "'$CONTRACT_ID'", "amount": "100000000000000000000", "msg": "{\"ExchangeData\":{\"amount_out\": \"10000000000000000000\", \"nonce\": 1, "signature": []}}"}' --accountId $OWNER_ID --gas 280000000000000 --depositYocto 1
+```

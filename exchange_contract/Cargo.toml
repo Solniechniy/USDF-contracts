@@ -16,3 +16,5 @@ ed25519-dalek = { version = "2.1.1", default-features = false, features = [
     "serde",
     "std",
 ] }
+rlp = "0.6.1"
+sha2 = "0.10.8"
