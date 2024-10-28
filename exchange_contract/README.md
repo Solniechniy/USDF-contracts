@@ -42,7 +42,7 @@ near deploy $CONTRACT_ID res/contract.wasm
 - withdraw_delay: delay in seconds for withdraw
 
 ```bash
-near call $CONTRACT_ID new '{"public_key": [], "token_id": "'$TOKEN_ID'", "withdraw_delay": 600}' --accountId $OWNER_ID
+near call $CONTRACT_ID new '{"public_key": [], "token_id": "'$TOKEN1_ID'", "withdraw_delay": 600}' --accountId $OWNER_ID
 ```
 
 ### Add whitelisted token
@@ -78,7 +78,7 @@ pub struct ExchangeData {
 ```
 
 ```bash
-near call $TOKEN_ID ft_transfer_call '{"receiver_id": "'$CONTRACT_ID'", "amount": "100000000000000000000", "msg": "{\"ExchangeData\":{\"amount_out\": \"10000000000000000000\", \"nonce\": 1, "signature": []}}"}' --accountId $OWNER_ID --gas 280000000000000 --depositYocto 1
+near call $TOKEN2_ID ft_transfer_call '{"receiver_id": "'$CONTRACT_ID'", "amount": "100000000000000000000", "msg": "{\"amount_out\": \"10000000000000000000\", \"nonce\": 1, \"signature\": []}"}' --accountId $OWNER_ID --gas 280000000000000 --depositYocto 1
 ```
 
 ### Exchange back
@@ -86,7 +86,7 @@ near call $TOKEN_ID ft_transfer_call '{"receiver_id": "'$CONTRACT_ID'", "amount"
 To exchange back usdf tokens to asset you have to send exactly the same count of tokens as you received. Msg no matter.
 
 ```bash
-near call $TOKEN_ID ft_transfer_call '{"receiver_id": "'$CONTRACT_ID'", "amount": "100000000000000000000", "msg": "{\"ExchangeData\":{\"amount_out\": \"10000000000000000000\", \"nonce\": 1, "signature": []}}"}' --accountId $OWNER_ID --gas 280000000000000 --depositYocto 1
+near call $TOKEN1_ID ft_transfer_call '{"receiver_id": "'$CONTRACT_ID'", "amount": "100000000000000000000", "msg": ""}' --accountId $OWNER_ID --gas 280000000000000 --depositYocto 1
 ```
 
 ### Get withdraws count
