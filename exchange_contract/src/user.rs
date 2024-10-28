@@ -1,5 +1,5 @@
 use near_contract_standards::fungible_token::{core::ext_ft_core, Balance};
-use near_sdk::{env, json_types::U128, near, require, AccountId, NearToken, Promise};
+use near_sdk::{env, json_types::U128, near, require, AccountId, NearToken, PromiseOrValue};
 
 use crate::{on_transfer::ExchangeData, withdraws::Withdraw, Contract};
 pub const ONE_YOCTO: Balance = 1;
@@ -26,7 +26,7 @@ impl Contract {
         token_in: &AccountId,
         amount_in: u128,
         account_id: &AccountId,
-    ) -> Promise {
+    ) -> PromiseOrValue<U128> {
         self.assert_whitelisted_token(token_in);
 
         if !self.users.contains_key(account_id) {
@@ -52,7 +52,9 @@ impl Contract {
         ext_ft_core::ext(self.token_id.clone())
             .with_attached_deposit(NearToken::from_yoctonear(ONE_YOCTO))
             .ft_transfer(account_id.clone(), U128(data.amount_out), None)
-            .then(Self::ext(env::current_account_id()).on_exchange_transfer())
+            .then(Self::ext(env::current_account_id()).on_exchange_transfer(account_id.clone()));
+
+        PromiseOrValue::Value(U128(0))
     }
 
     pub fn reverse_exchange(&mut self, amount: U128, account_id: AccountId, token_id: AccountId) {

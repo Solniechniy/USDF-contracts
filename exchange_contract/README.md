@@ -32,7 +32,7 @@ near create-account $CONTRACT_ID --masterAccount $OWNER_ID --initialBalance 5
 ### Deploy contract
 
 ```bash
-near deploy $CONTRACT_ID res/contract.wasm
+near deploy $CONTRACT_ID res/exchange_contract.wasm
 ```
 
 ### Initialize contract
@@ -117,4 +117,10 @@ near view $CONTRACT_ID get_withdraw_delay '{}' --accountId $OWNER_ID
 
 ```bash
 near view $CONTRACT_ID get_user '{"account_id": "'$USER_ID'"}' --accountId $OWNER_ID
+```
+
+### delete user
+
+```bash
+near call $CONTRACT_ID delete_user '{"account_id": "'$USER_ID'"}' --accountId $OWNER_ID --gas 300000000000000
 ```

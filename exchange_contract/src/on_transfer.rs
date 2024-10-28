@@ -23,6 +23,7 @@ impl FungibleTokenReceiver for Contract {
         let token_in = env::predecessor_account_id();
         if token_in == self.token_id {
             self.reverse_exchange(amount, sender_id, token_in);
+
             PromiseOrValue::Value(U128(0))
         } else {
             let data: ExchangeData = serde_json::from_str(&msg).expect("ERR_FAILED_TO_PARSE_MSG");
@@ -31,7 +32,7 @@ impl FungibleTokenReceiver for Contract {
 
             self.validate_data(&data, &sender_id);
 
-            PromiseOrValue::Promise(self.execute_exchange(data, &token_in, amount.0, &sender_id))
+            self.execute_exchange(data, &token_in, amount.0, &sender_id)
         }
     }
 }

@@ -23,4 +23,9 @@ impl Contract {
             .expect("ERR_NO_TOKEN");
         self.whitelisted_tokens.remove(index);
     }
+
+    pub fn delete_user(&mut self, account_id: AccountId) {
+        self.assert_owner();
+        self.users.remove(&account_id);
+    }
 }

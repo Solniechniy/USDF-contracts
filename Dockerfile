@@ -28,4 +28,4 @@ VOLUME "/var/cache/cargo"
 VOLUME "/output"
 
 CMD cargo build --target wasm32-unknown-unknown --release --workspace --exclude tests && \
-    cp target/wasm32-unknown-unknown/release/exchange_contract.wasm /output/contract.wasm
+    cp target/wasm32-unknown-unknown/release/exchange_contract.wasm /output/exchange_contract.wasm
