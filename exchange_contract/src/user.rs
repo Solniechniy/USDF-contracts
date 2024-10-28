@@ -4,13 +4,15 @@ use near_sdk::{env, json_types::U128, near, require, AccountId, NearToken, Promi
 use crate::{on_transfer::ExchangeData, withdraws::Withdraw, Contract};
 pub const ONE_YOCTO: Balance = 1;
 
-#[near(serializers = [borsh, serde])]
+#[derive(Clone)]
+#[near(serializers = [borsh, json])]
 pub struct User {
     pub nonce: u64,
     pub exchanges: Vec<ExchangeItem>,
 }
 
-#[near(serializers = [borsh, serde])]
+#[derive(Clone)]
+#[near(serializers = [borsh, json])]
 pub struct ExchangeItem {
     pub token_in: AccountId,
     pub amount_in: u128,

@@ -3,7 +3,8 @@ use near_sdk::{env, json_types::U128, near, require, AccountId, NearToken, Promi
 
 use crate::{user::ONE_YOCTO, Contract, ContractExt};
 
-#[near(serializers = [borsh, serde])]
+#[derive(Clone)]
+#[near(serializers = [borsh, json])]
 pub struct Withdraw {
     pub account_id: AccountId,
     pub amount: u128,

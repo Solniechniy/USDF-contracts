@@ -88,3 +88,33 @@ To exchange back usdf tokens to asset you have to send exactly the same count of
 ```bash
 near call $TOKEN_ID ft_transfer_call '{"receiver_id": "'$CONTRACT_ID'", "amount": "100000000000000000000", "msg": "{\"ExchangeData\":{\"amount_out\": \"10000000000000000000\", \"nonce\": 1, "signature": []}}"}' --accountId $OWNER_ID --gas 280000000000000 --depositYocto 1
 ```
+
+### Get withdraws count
+
+```bash
+near view $CONTRACT_ID get_withdraws_count '{}' --accountId $OWNER_ID
+```
+
+### Get withdraws
+
+```bash
+near view $CONTRACT_ID get_withdraws '{"from": 0, "limit": 10}' --accountId $OWNER_ID
+```
+
+### Get whitelisted tokens
+
+```bash
+near view $CONTRACT_ID get_whitelisted_tokens '{}' --accountId $OWNER_ID
+```
+
+### Get withdraw delay
+
+```bash
+near view $CONTRACT_ID get_withdraw_delay '{}' --accountId $OWNER_ID
+```
+
+### Get user
+
+```bash
+near view $CONTRACT_ID get_user '{"account_id": "'$USER_ID'"}' --accountId $OWNER_ID
+```

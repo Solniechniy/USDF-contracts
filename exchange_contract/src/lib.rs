@@ -13,6 +13,7 @@ mod on_transfer;
 mod owner;
 mod user;
 mod verifier;
+mod view;
 mod withdraws;
 
 #[derive(BorshStorageKey)]
