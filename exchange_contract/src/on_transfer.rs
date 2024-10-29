@@ -1,14 +1,14 @@
 use {
-    near_contract_standards::fungible_token::receiver::FungibleTokenReceiver,
+    near_contract_standards::fungible_token::{receiver::FungibleTokenReceiver, Balance},
     near_sdk::{env, json_types::U128, near, serde_json, AccountId, PromiseOrValue},
 };
 
-use crate::{Contract, ContractExt};
+use crate::{user::Nonce, Contract, ContractExt};
 
 #[near(serializers = [json])]
 pub struct ExchangeData {
-    pub amount_out: u128,
-    pub nonce: u64,
+    pub amount_out: Balance,
+    pub nonce: Nonce,
     pub signature: Vec<u8>,
 }
 

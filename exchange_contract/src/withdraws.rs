@@ -1,5 +1,5 @@
-use near_contract_standards::fungible_token::core::ext_ft_core;
-use near_sdk::{env, json_types::U128, near, require, AccountId, NearToken, Promise};
+use near_contract_standards::fungible_token::{core::ext_ft_core, Balance};
+use near_sdk::{env, json_types::U128, near, require, AccountId, NearToken, Promise, Timestamp};
 
 use crate::{user::ONE_YOCTO, Contract, ContractExt};
 
@@ -7,9 +7,9 @@ use crate::{user::ONE_YOCTO, Contract, ContractExt};
 #[near(serializers = [borsh, json])]
 pub struct Withdraw {
     pub account_id: AccountId,
-    pub amount: u128,
+    pub amount: Balance,
     pub token_id: AccountId,
-    pub timestamp: u64,
+    pub timestamp: Timestamp,
 }
 
 #[near]
