@@ -48,12 +48,12 @@ impl Contract {
         user.exchanges.push(ExchangeItem {
             token_in: token_in.clone(),
             amount_in,
-            amount_out: data.amount_out,
+            amount_out: data.amount_out.0,
         });
 
         ext_ft_core::ext(self.token_id.clone())
             .with_attached_deposit(NearToken::from_yoctonear(ONE_YOCTO))
-            .ft_transfer(account_id.clone(), U128(data.amount_out), None)
+            .ft_transfer(account_id.clone(), data.amount_out, None)
             .then(Self::ext(env::current_account_id()).on_exchange_transfer(account_id.clone()));
 
         PromiseOrValue::Value(U128(0))
@@ -92,7 +92,7 @@ impl Contract {
     }
 
     pub(crate) fn validate_data(&self, data: &ExchangeData, account_id: &AccountId) {
-        assert!(data.amount_out > 0, "ERR_INVALID_AMOUNT_OUT");
+        assert!(data.amount_out.0 > 0, "ERR_INVALID_AMOUNT_OUT");
 
         let nonce = self.users.get(account_id).map(|u| u.nonce).unwrap_or(0);
         assert!(data.nonce > nonce, "ERR_INVALID_NONCE");

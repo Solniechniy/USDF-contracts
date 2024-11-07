@@ -7,7 +7,7 @@ use crate::{user::Nonce, Contract, ContractExt};
 
 #[near(serializers = [json])]
 pub struct ExchangeData {
-    pub amount_out: Balance,
+    pub amount_out: U128,
     pub nonce: Nonce,
     pub signature: Vec<u8>,
 }
