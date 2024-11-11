@@ -42,14 +42,13 @@ near deploy $CONTRACT_ID res/exchange_contract.wasm
 - withdraw_delay: delay in seconds for withdraw
 
 ```bash
-near call $CONTRACT_ID new '{"public_key": [], "token_id": "'$TOKEN1_ID'", "withdraw_delay": 600}' --accountId $OWNER_ID
+near call $CONTRACT_ID new '{"public_key": [23,155,203,82,140,189,208,103,153,249,146,121,110,27,45,241,39,161,219,185,176,240,163,43,187,195,205,210,244,86,144,97], "token_id": "'$TOKEN2_ID'", "withdraw_delay": 600}' --accountId $OWNER_ID
 ```
 
 ### Add whitelisted token
 
 ```bash
-near call $CONTRACT_ID add_whitelisted_token '{"token_id":
-"'$TOKEN2_ID'"}' --accountId $OWNER_ID
+near call $CONTRACT_ID add_whitelisted_token '{"token_id": "usmeme.tg"}' --accountId $OWNER_ID
 ```
 
 ### Update withdraw delay
@@ -117,6 +116,12 @@ near view $CONTRACT_ID get_withdraw_delay '{}' --accountId $OWNER_ID
 
 ```bash
 near view $CONTRACT_ID get_user '{"account_id": "'$USER_ID'"}' --accountId $OWNER_ID
+```
+
+### Get withdraws by user
+
+```bash
+near view $CONTRACT_ID get_withdraws_by_user '{"account_id": "'$USER_ID'"}' --accountId $OWNER_ID
 ```
 
 ### delete user

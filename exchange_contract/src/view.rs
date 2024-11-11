@@ -25,4 +25,12 @@ impl Contract {
     pub fn get_user(&self, account_id: AccountId) -> Option<User> {
         self.users.get(&account_id).cloned()
     }
+
+    pub fn get_withdraws_by_user(&self, account_id: AccountId) -> Vec<Withdraw> {
+        self.withdraw_list
+            .iter()
+            .filter(|w| w.account_id == account_id)
+            .cloned()
+            .collect()
+    }
 }
